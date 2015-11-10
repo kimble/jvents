@@ -3,6 +3,9 @@ package com.developerb.jvents;
 import java.util.List;
 
 /**
+ * Because this library does not require consumers to inherit from our code
+ * they will have to supply an instance of this class telling this library
+ * how to create an instance of their aggregate type.
  *
  * @param <A> Aggregate base type
  * @param <E> Event base type
