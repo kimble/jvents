@@ -5,10 +5,11 @@ import com.developerb.jvents.TestAggregate;
 import com.developerb.jvents.TestEvent;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -16,10 +17,10 @@ import static org.junit.Assert.*;
 public class ReflectiveAggregateFactoryTest {
 
     @Test
-    public void name() throws Exception {
+    public void canCreateAggregateInstance() throws Exception {
         AggregateFactory<TestAggregate, TestEvent> factory = new ReflectiveAggregateFactory<>();
 
-        SomeAggregate aggregate = factory.createInstance(SomeAggregate.class, "some-stream-id", Arrays.asList (
+        SomeAggregate aggregate = factory.createInstance(SomeAggregate.class, "some-stream-id", Collections.singletonList (
                 new SomeEvent("Ole Brumm", 25)
         ));
 
