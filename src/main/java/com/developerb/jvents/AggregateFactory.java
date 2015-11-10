@@ -14,6 +14,12 @@ public interface AggregateFactory<A, E> {
 
     <G extends A> G createInstance(Class<G> type, String aggregateId, List<E> events) throws AggregateCreationFailure;
 
+    <G extends A> List<E> getDirtyEvents(G aggregate);
+
+    <G extends A> String getId(G aggregate);
+
+    <G extends A> long currentRevision(G aggregate);
+
 
     class AggregateCreationFailure extends RuntimeException {
 

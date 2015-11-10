@@ -8,28 +8,34 @@ import java.util.List;
 /**
  *
  */
-public class ReflectiveAggregateRoot {
+public abstract class ReflectiveAggregateRoot<E> {
 
     private final String id;
 
-    private final List<Object> dirtyEvents = new ArrayList<>();
+    private final List<E> dirtyEvents = new ArrayList<>();
+
+    private long revision = 0;
 
 
-    public ReflectiveAggregateRoot(String aggregateId, List<?> events) {
+    public ReflectiveAggregateRoot(String aggregateId, List<E> events) {
         if (aggregateId == null) {
             throw new IllegalArgumentException("Aggregate id can't be null");
         }
 
         this.id = aggregateId;
+
+        initializeDefaults();
         apply(events, true);
     }
 
-    protected void apply(Object event) {
+    protected abstract void initializeDefaults();
+
+    protected void apply(E event) {
         apply(Collections.singletonList(event), false);
     }
 
-    private void apply(List<?> events, boolean persisted) {
-        for (Object event : events) {
+    private void apply(List<E> events, boolean persisted) {
+        for (E event : events) {
             try {
                 Class<?> eventType = event.getClass();
                 Method[] declaredMethods = this.getClass().getDeclaredMethods();
@@ -51,8 +57,12 @@ public class ReflectiveAggregateRoot {
                 eventHandlingMethod.setAccessible(true);
                 eventHandlingMethod.invoke(this, event);
 
+
                 if (!persisted) {
                     dirtyEvents.add(event);
+                }
+                else {
+                    revision++;
                 }
             }
             catch (Exception ex) {
@@ -61,7 +71,7 @@ public class ReflectiveAggregateRoot {
         }
     }
 
-    public final String getId() {
+    public final String id() {
         return id;
     }
 
@@ -69,8 +79,12 @@ public class ReflectiveAggregateRoot {
         return !dirtyEvents.isEmpty();
     }
 
-    public List<Object> dirtyEvents() {
+    public List<E> dirtyEvents() {
         return dirtyEvents;
+    }
+
+    public long currentRevision() {
+        return revision;
     }
 
 }

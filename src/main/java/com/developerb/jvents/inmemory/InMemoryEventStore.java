@@ -1,6 +1,7 @@
 package com.developerb.jvents.inmemory;
 
 import com.developerb.jvents.AggregateFactory;
+import com.developerb.jvents.AppendableEventStore;
 import com.developerb.jvents.EventSerializer;
 import com.developerb.jvents.EventStore;
 
@@ -28,6 +29,34 @@ public class InMemoryEventStore<E, A> implements EventStore<E, A> {
     }
 
     @Override
+    public <G extends A> G readAggregate(Class<G> type, String aggregateId) {
+        synchronized (aggregateStreams) {
+            final List<String> strings = aggregateStreams.get(aggregateId);
+
+            if (strings == null) {
+                throw new MissingAggregateException(type, aggregateId);
+            }
+
+            final List<E> events = strings.stream()
+                    .map(serializer::deserialize)
+                    .collect(Collectors.toList());
+
+            return aggregateFactory.createInstance(type, aggregateId, events);
+        }
+    }
+
+
+    @Override
+    public <G extends A> void append(G aggregate) throws AppendFailedException {
+        List<E> events = aggregateFactory.getDirtyEvents(aggregate);
+        String aggregateId = aggregateFactory.getId(aggregate);
+        long expectedRevision = aggregateFactory.currentRevision(aggregate);
+
+        append(aggregateId, expectedRevision, events);
+    }
+
+
+    @Override
     public void append(String aggregateId, long expectedRevision, List<E> events) throws AppendFailedException {
         synchronized (aggregateStreams) {
             if (!aggregateStreams.containsKey(aggregateId)) {
@@ -44,24 +73,6 @@ public class InMemoryEventStore<E, A> implements EventStore<E, A> {
             existingEvents.addAll(events.stream()
                     .map(serializer::serialize)
                     .collect(Collectors.toList()));
-        }
-    }
-
-
-    @Override
-    public <G extends A> G readAggregate(Class<G> type, String aggregateId) {
-        synchronized (aggregateStreams) {
-            final List<String> strings = aggregateStreams.get(aggregateId);
-
-            if (strings == null) {
-                throw new MissingAggregateException(type, aggregateId);
-            }
-
-            final List<E> events = strings.stream()
-                    .map(serializer::deserialize)
-                    .collect(Collectors.toList());
-
-            return aggregateFactory.createInstance(type, aggregateId, events);
         }
     }
 

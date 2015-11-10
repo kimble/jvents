@@ -7,13 +7,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 
-/**
- *
- */
 public class ReflectiveAggregateRootTest {
 
 
@@ -64,12 +61,17 @@ public class ReflectiveAggregateRootTest {
     }
 
 
-    public static class CalculatorAggregate extends ReflectiveAggregateRoot {
+    public static class CalculatorAggregate extends ReflectiveAggregateRoot<TestEvent> {
 
         public int sum;
 
         public CalculatorAggregate(String id, List<TestEvent> events) {
             super(id, events);
+        }
+
+        @Override
+        protected void initializeDefaults() {
+            sum = 0;
         }
 
         public void addNumber(int number) {

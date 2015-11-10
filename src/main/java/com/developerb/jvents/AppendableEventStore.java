@@ -5,7 +5,7 @@ import java.util.List;
 /**
  *
  */
-public interface AppendableEventStore<E> {
+public interface AppendableEventStore<A, E> {
 
     /**
      * Append one or more events to an aggregate stream.
@@ -17,6 +17,8 @@ public interface AppendableEventStore<E> {
      */
     void append(String aggregateId, long expectedRevision, List<E> events) throws AppendFailedException;
 
+
+    <G extends A> void append(G aggregate) throws AppendFailedException;
 
 
 

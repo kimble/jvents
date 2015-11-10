@@ -8,7 +8,7 @@ import java.util.List;
 /**
  *
  */
-public class ReflectiveAggregateFactory<A, E> implements AggregateFactory<A, E> {
+public abstract class ReflectiveAggregateFactory<A, E> implements AggregateFactory<A, E> {
 
     @Override
     public <G extends A> G createInstance(Class<G> type, String aggregateId, List<E> events) throws AggregateCreationFailure {

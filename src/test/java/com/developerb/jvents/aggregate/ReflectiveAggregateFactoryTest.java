@@ -1,7 +1,6 @@
 package com.developerb.jvents.aggregate;
 
 import com.developerb.jvents.AggregateFactory;
-import com.developerb.jvents.TestAggregate;
 import com.developerb.jvents.TestEvent;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,14 +23,14 @@ public class ReflectiveAggregateFactoryTest {
 
     @Test
     public void canCreateAggregateInstance() throws Exception {
-        AggregateFactory<ReflectiveAggregateRoot, TestEvent> factory = new ReflectiveAggregateFactory<>();
+        AggregateFactory<ReflectiveAggregateRoot<TestEvent>, TestEvent> factory = new MyFactory();
 
         SomeAggregate aggregate = factory.createInstance(SomeAggregate.class, "some-stream-id", Collections.singletonList (
                 new SomeEvent("Ole Brumm", 25)
         ));
 
         assertNotNull(aggregate);
-        assertEquals("some-stream-id", aggregate.getId());
+        assertEquals("some-stream-id", aggregate.id());
     }
 
     @Test
@@ -40,7 +39,7 @@ public class ReflectiveAggregateFactoryTest {
         ex.expectMessage("Failed to create instance of class com.developerb.jvents.aggregate.ReflectiveAggregateFactoryTest$AggregateWithoutAppropriateConstructor " +
                 "with id <some-stream-id>: Missing appropriate constructor (String aggregateId, List<E> events)");
 
-        AggregateFactory<ReflectiveAggregateRoot, TestEvent> factory = new ReflectiveAggregateFactory<>();
+        AggregateFactory<ReflectiveAggregateRoot<TestEvent>, TestEvent> factory = new MyFactory();
 
         factory.createInstance(AggregateWithoutAppropriateConstructor.class, "some-stream-id", Collections.singletonList (
                 new SomeEvent("Ole Brumm", 25)
@@ -62,10 +61,15 @@ public class ReflectiveAggregateFactoryTest {
     }
 
 
-    public static class SomeAggregate extends ReflectiveAggregateRoot {
+    public static class SomeAggregate extends ReflectiveAggregateRoot<TestEvent> {
 
         public SomeAggregate(String id, List<TestEvent> events) {
             super(id, events);
+        }
+
+        @Override
+        protected void initializeDefaults() {
+
         }
 
         protected void on(SomeEvent event) {
@@ -74,10 +78,34 @@ public class ReflectiveAggregateFactoryTest {
 
     }
 
-    public static class AggregateWithoutAppropriateConstructor extends ReflectiveAggregateRoot {
+    public static class AggregateWithoutAppropriateConstructor extends ReflectiveAggregateRoot<TestEvent> {
 
         public AggregateWithoutAppropriateConstructor() {
             super(null, null);
+        }
+
+        @Override
+        protected void initializeDefaults() {
+
+        }
+
+    }
+
+    private static class MyFactory extends ReflectiveAggregateFactory<ReflectiveAggregateRoot<TestEvent>, TestEvent> {
+
+        @Override
+        public <G extends ReflectiveAggregateRoot<TestEvent>> List<TestEvent> getDirtyEvents(G aggregate) {
+            return aggregate.dirtyEvents();
+        }
+
+        @Override
+        public <G extends ReflectiveAggregateRoot<TestEvent>> String getId(G aggregate) {
+            return aggregate.id();
+        }
+
+        @Override
+        public <G extends ReflectiveAggregateRoot<TestEvent>> long currentRevision(G aggregate) {
+            return aggregate.currentRevision();
         }
 
     }
