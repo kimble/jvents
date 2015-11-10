@@ -30,9 +30,7 @@ public abstract class EventStoreTest {
 
         store.append("aggregate-x", 0, Collections.singletonList(first));
 
-
         SomeAggregate aggregate = store.readAggregate(SomeAggregate.class, "aggregate-x");
-
 
         assertNotNull(aggregate);
         assertEquals("aggregate-x", aggregate.getId());

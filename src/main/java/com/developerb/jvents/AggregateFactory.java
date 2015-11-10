@@ -18,11 +18,11 @@ public interface AggregateFactory<A, E> {
     class AggregateCreationFailure extends RuntimeException {
 
         public AggregateCreationFailure(Class<?> type, String aggregateId, Throwable cause) {
-            super("Failed to create instance of " + type + " with id " + aggregateId, cause);
+            super("Failed to create instance of " + type + " with id <" + aggregateId + ">", cause);
         }
 
         public AggregateCreationFailure(Class<?> type, String aggregateId, String message, Throwable cause) {
-            super("Failed to create instance of " + type + " with id " + aggregateId + ": " + message, cause);
+            super("Failed to create instance of " + type + " with id <" + aggregateId + ">: " + message, cause);
         }
 
     }
