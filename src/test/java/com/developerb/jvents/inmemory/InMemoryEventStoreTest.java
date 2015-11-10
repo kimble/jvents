@@ -4,9 +4,7 @@ import com.developerb.jvents.*;
 import com.developerb.jvents.aggregate.ReflectiveAggregateFactory;
 import com.developerb.jvents.serializer.GsonEventSerializer;
 
-/**
- *
- */
+
 public class InMemoryEventStoreTest extends EventStoreTest {
 
     @Override

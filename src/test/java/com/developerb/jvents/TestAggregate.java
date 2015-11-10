@@ -1,18 +1,17 @@
 package com.developerb.jvents;
 
+import com.developerb.jvents.aggregate.ReflectiveAggregateRoot;
+
+import java.util.List;
+
 /**
  *
  */
-public class TestAggregate {
+public abstract class TestAggregate extends ReflectiveAggregateRoot {
 
-    private final String id;
 
-    public TestAggregate(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
+    public TestAggregate(String aggregateId, List<?> events) {
+        super(aggregateId, events);
     }
 
 }

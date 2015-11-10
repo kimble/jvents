@@ -46,7 +46,11 @@ public class ReflectiveAggregateFactoryTest {
     public static class SomeAggregate extends TestAggregate {
 
         public SomeAggregate(String id, List<TestEvent> events) {
-            super(id);
+            super(id, events);
+        }
+
+        protected void on(SomeEvent event) {
+
         }
 
     }

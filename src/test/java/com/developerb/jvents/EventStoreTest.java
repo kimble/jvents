@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -34,6 +35,7 @@ public abstract class EventStoreTest {
 
 
         assertNotNull(aggregate);
+        assertEquals("aggregate-x", aggregate.getId());
     }
 
 
@@ -55,7 +57,12 @@ public abstract class EventStoreTest {
     public static class SomeAggregate extends TestAggregate {
 
         public SomeAggregate(String id, List<TestEvent> events) {
-            super(id);
+            super(id, events);
+        }
+
+
+        protected void on(SomeEvent event) {
+
         }
 
     }
