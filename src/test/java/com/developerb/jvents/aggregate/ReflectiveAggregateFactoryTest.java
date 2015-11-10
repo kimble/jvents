@@ -35,7 +35,7 @@ public class ReflectiveAggregateFactoryTest {
     }
 
     @Test
-    public void detectAggregatesWithoutAppropraiteConstructor() throws Exception {
+    public void detectAggregatesWithoutAppropriateConstructor() throws Exception {
         ex.expect(AggregateFactory.AggregateCreationFailure.class);
         ex.expectMessage("Failed to create instance of class com.developerb.jvents.aggregate.ReflectiveAggregateFactoryTest$AggregateWithoutAppropriateConstructor " +
                 "with id <some-stream-id>: Missing appropriate constructor (String aggregateId, List<E> events)");
@@ -47,7 +47,7 @@ public class ReflectiveAggregateFactoryTest {
         ));
     }
 
-    
+
 
     public static class SomeEvent extends TestEvent {
 
