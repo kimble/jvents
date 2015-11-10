@@ -2,7 +2,6 @@ package com.developerb.jvents.serializer;
 
 import com.developerb.jvents.EventSerializer;
 import com.google.gson.Gson;
-import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
 
 /**
  *
@@ -16,11 +15,16 @@ public class GsonEventSerializer<E> implements EventSerializer<E> {
     }
 
     @Override
-    public String serialize(E event) {
-        String type = event.getClass().getName();
-        String json = gson.toJson(event);
+    public String serialize(E event) throws SerializationFailedException {
+        try {
+            String type = event.getClass().getName();
+            String json = gson.toJson(event);
 
-        return "::" + type + "\n" + json;
+            return "::" + type + "\n" + json;
+        }
+        catch (Exception ex) {
+            throw new SerializationFailedException(event, ex);
+        }
     }
 
     @Override

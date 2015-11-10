@@ -3,7 +3,7 @@ package com.developerb.jvents.serializer;
 /**
  *
  */
-public class DeserializationFailedException extends SerializationException {
+public class DeserializationFailedException extends RuntimeException {
 
     private final String serialized;
 
